@@ -209,7 +209,7 @@ def number_remov(listy): # useed
 #stemming arabic words     
 def stemming_darija(word):
     # file = "./Data_prep/suf_pref_darija.json" # local run
-    file = "suf_pref_darija.json" 
+    file = "./depend/suf_pref_darija.json" 
 
     with open(file, 'r', encoding='utf-8') as json_file:
         suf_pref = json.load(json_file)
