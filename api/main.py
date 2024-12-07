@@ -19,8 +19,7 @@ required_env_vars = [
     'AWS_ACCESS_KEY_ID',
     'AWS_SECRET_ACCESS_KEY',
     'AWS_DEFAULT_REGION',
-    'DYNAMODB_TABLE_NAME',
-    'AWS_BUCKET_NAME'
+    'DYNAMODB_TABLE_NAME'
 ]
 
 app = FastAPI()
@@ -45,22 +44,6 @@ table = dynamodb.Table(os.getenv('DYNAMODB_TABLE_NAME'))
 executor = ThreadPoolExecutor(max_workers=1)
 last_save_time = 0
 
-def download_model_from_s3(bucket_name, model_key, local_path):
-    try:
-        print(f"Attempting to download {model_key} from S3 bucket {bucket_name}")
-        s3_client = boto3.client(
-            's3',
-            aws_access_key_id=os.getenv('AWS_ACCESS_KEY_ID'),
-            aws_secret_access_key=os.getenv('AWS_SECRET_ACCESS_KEY'),
-            region_name=os.getenv('AWS_DEFAULT_REGION')
-        )
-        s3_client.download_file(bucket_name, model_key, local_path)
-        print(f"Successfully downloaded {model_key}")
-        return True
-    except Exception as e:
-        print(f"Error downloading {model_key} from S3: {str(e)}")
-        return False
-
 # Initialize models as None
 model = None
 vectorizer = None
@@ -68,35 +51,17 @@ vectorizer = None
 def load_models():
     global model, vectorizer
     
-    # S3 configuration
-    bucket_name = os.getenv('AWS_BUCKET_NAME')
-    model_key = 'models/sentiment_model.joblib'
-    vectorizer_key = 'models/vectorizer.joblib'
-    
-    # Create models directory if it doesn't exist
-    os.makedirs('./tmp', exist_ok=True)
-    
-    # Local temporary paths
-    temp_model_path = './tmp/sentiment_model.joblib'
-    temp_vectorizer_path = './tmp/vectorizer.joblib'
-    
     try:
-        # Download models from S3
-        if download_model_from_s3(bucket_name, model_key, temp_model_path) and \
-           download_model_from_s3(bucket_name, vectorizer_key, temp_vectorizer_path):
-            
-            # Load models from temporary files
-            model = joblib.load(temp_model_path)
-            vectorizer = joblib.load(temp_vectorizer_path)
-            
-            # Clean up temporary files
-            try:
-                os.remove(temp_model_path)
-                os.remove(temp_vectorizer_path)
-            except:
-                pass
-            
-            return True
+        # Local model paths - adjust these paths to where your models are stored
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        model_path = os.path.join(current_dir, 'models', 'sentiment_model.joblib')
+        vectorizer_path = os.path.join(current_dir, 'models', 'vectorizer.joblib')
+        
+        # Load models from local files
+        model = joblib.load(model_path)
+        vectorizer = joblib.load(vectorizer_path)
+        print("Models loaded successfully from local files")
+        return True
     except Exception as e:
         print(f"Error loading models: {str(e)}")
         return False
@@ -104,7 +69,7 @@ def load_models():
 @app.on_event("startup")
 async def startup_event():
     if not load_models():
-        raise RuntimeError("Failed to load models from S3")
+        raise Exception("Failed to load models")
 
 def truncate_text(text: str, max_bytes: int = 1024) -> str:
     encoded = text.encode('utf-8')
@@ -166,7 +131,7 @@ async def predict_sentiment(text: str):
             detail=f"Error processing request: {str(e)}"
         )
 
-@app.get("/analyze_youtube/{video_url:path}")
+@app.get("/analyze-youtube/{video_url}")
 async def analyze_youtube_comments(video_url: str, max_results: int = 6):
     try:
         comments_df, thumbnail_url = get_data(video_url, max_results)
