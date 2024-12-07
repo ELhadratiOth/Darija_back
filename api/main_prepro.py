@@ -1,4 +1,4 @@
-from cleaning_funcs import *
+from .cleaning_funcs import *
 from pyarabic.araby import tokenize
 import json
 
