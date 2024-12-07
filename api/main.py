@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 import joblib
 import os
 from fastapi.middleware.cors import CORSMiddleware
-from yt_scraper import get_data
+from .yt_scraper import get_data
 import numpy as np
 import boto3
 from datetime import datetime
