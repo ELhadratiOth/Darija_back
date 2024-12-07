@@ -2,8 +2,8 @@ import re
 from tashaphyne.stemming import ArabicLightStemmer
 import json
 from pyarabic.araby import strip_diacritics
-import emoji 
-
+import emoji
+import os
 
 # translating darija(latin) to daruja(arabic)
 #    "sbe3": "سبع"
@@ -119,6 +119,7 @@ def word_remover(word):
 
       
 
+
 # remove urls  
 def remove_url(text): # useed
     text = re.sub(r'(https|http)?:\/\/(\w|\.|\/|\?|\=|\&|\%)*\b',
@@ -205,11 +206,10 @@ def number_remov(listy): # useed
     return cleaned_list        
       
       
-      
 #stemming arabic words     
 def stemming_darija(word):
-    # file = "./Data_prep/suf_pref_darija.json" # local run
-    file = "./depend/suf_pref_darija.json" 
+    current_dir = os.path.dirname(os.path.abspath(__file__))
+    file = os.path.join(current_dir, 'depend', 'suf_pref_darija.json')
 
     with open(file, 'r', encoding='utf-8') as json_file:
         suf_pref = json.load(json_file)
@@ -219,8 +219,7 @@ def stemming_darija(word):
     ArListem.set_suffix_list(suf_pref['darija_suffixes'])
     ArListem.light_stem(word)  
     return ArListem.get_stem()   
-
-
+      
 # "03:44"
 def remove_yt_timers(text):
     pattern = r'\b\d{1,2}:\d{2,3}(:\d{2,3})?\b'
@@ -234,8 +233,3 @@ def preproc_arab_sentence(word): # main function for  arab processing tokens
     # word = remove_ambiguity_hamza(word)
     word = word_remover(word)
     return word
-      
-      
-      
-      
-      

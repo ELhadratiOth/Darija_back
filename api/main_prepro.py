@@ -10,16 +10,13 @@ import os
 from pyarabic.araby import tokenize
 def tokenize_arab_text(text):
             #print(text)
-            # Get the absolute path to the depend directory
             current_dir = os.path.dirname(os.path.abspath(__file__))
             depend_dir = os.path.join(current_dir, 'depend')
 
-            # Load stop words
             stop_words_path = os.path.join(depend_dir, 'stop_words_accum.json')
             with open(stop_words_path, 'r', encoding='utf-8') as file:
                 stop_words = json.load(file)
 
-            # Load darija latin reference
             darija_latin_path = os.path.join(depend_dir, 'darija_latin_ref.json')
             with open(darija_latin_path, 'r', encoding='utf-8') as file:
                 darija_latin_ref = json.load(file)
