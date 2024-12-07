@@ -11,7 +11,7 @@ from concurrent.futures import ThreadPoolExecutor
 import time
 import uuid
 from dotenv import load_dotenv
-from main_prepro import tokenize_arab_text
+from .main_prepro import tokenize_arab_text
 
 load_dotenv()
 
