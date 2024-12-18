@@ -2,7 +2,7 @@ from fastapi import FastAPI, HTTPException
 import joblib
 import os
 from fastapi.middleware.cors import CORSMiddleware
-from yt_scraper import get_data
+from .yt_scraper import get_data
 import boto3
 from datetime import datetime ,timezone
 import asyncio
@@ -10,7 +10,7 @@ from concurrent.futures import ThreadPoolExecutor
 import time
 import uuid
 from dotenv import load_dotenv
-from main_prepro import tokenize_arab_text
+from .main_prepro import tokenize_arab_text
 from contextlib import asynccontextmanager
 import warnings
 from sklearn.exceptions import InconsistentVersionWarning
