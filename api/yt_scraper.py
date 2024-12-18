@@ -9,6 +9,7 @@ def get_data(video_link, max_results=6):
     API_KEY = os.environ['YTKEY']
     os.environ["OAUTHLIB_INSECURE_TRANSPORT"] = "1"
     VIDEO_ID = video_link.split("v=")[1].split("&")[0]
+    print(VIDEO_ID)
 
     youtube = googleapiclient.discovery.build("youtube", "v3", developerKey=API_KEY)
 

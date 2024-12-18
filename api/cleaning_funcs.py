@@ -20,15 +20,18 @@ darija_alphabet = {
     "ay": "ي",    
     "ae": "ي",   
     "5": "خ",     
-    "2": "ا",    
+    "2": "ا",  
+    "a": "ا",    
     "b": "ب",
     "t": "ت",
     "j": "ج",
     "7": "ح",
     "d": "د",
+    "dd": "ض",
     "r": "ر",
     "z": "ز",
     "s": "س",
+    "ss": "ص",
     "9": "ق",
     "3": "ع",
     "4": "غ",
@@ -51,13 +54,13 @@ darija_alphabet = {
 }
 word_in = [
     "ء", "أ", "إ", "آ", "ؤ", "ئ", "ة", "ى","-", "/", ".", "،", '"', "'", "\\", "?", "؟", "!", "،", "؛",":","#", "@", "&", "=", "¥", "$", "%", "*", "+", "<", ">", "|", "~", "^", 
-    "\n", "\t", "\r", " و","ذ", "ظ", "ض", "ص","(", ")", "[", "]", "{", "}", "《", "》", "«", "»"
+    "\n", "\t", "\r", "ذ", "ظ",  "(", ")", "[", "]", "{", "}", "《", "》", "«", "»"
 ]
 
 replaced_by = [
     "ا", "ا", "ا", "ا", "ا", "ا", "ه", "ي"," ", "", "", "", "", "", "", " ? ", " ؟ ", " ! ", "", "", "",
     "", "", "", "", "", "", "", "", "", "", "", "", "", ""," ", " ", " ", "",
-    "د", "د", "د", "س","", "", "", "", "", "", "", "", "", ""
+    "د", "ض","",  "", "", "", "", "", "", "", ""
 ]
 
 arabic_alphabet = "ابتثجحخدذرزسشصضطظعغفقكلمنهوي"
@@ -98,24 +101,36 @@ def remove_AL(word): # useed
       
       
 # remove repeated characters      
-def word_remover(word):
-    if len(word) == 1 or len(word) == 0 or len(word) >= 13:
-        return ""
-    else:
-        try:
-            for a7rf in arabic_alphabet:
-                if a7rf == 'د' or a7rf == 'ه':
-                    word = re.sub(fr'{a7rf}{{3,}}', a7rf * 2, word).strip()
-                else:
-                    word = re.sub(fr'{a7rf}+', a7rf, word).strip()
-            for i in range(len(word)):
-                if word[i] in word_in:
-                    index = word_in.index(word[i])
-                    word = word[:i] + replaced_by[index] + word[i + 1:]
-            return word
-        except IndexError as e:
-            return ""
-            return word 
+def word_remover(word): # useed
+            if len(word) == 1 or len(word) == 0 or len(word) >= 13:
+                return ""                
+            else :
+                #print(word)
+                for a7rf in arabic_alphabet:
+                    if a7rf == 'د' or a7rf == 'ه':
+                        word = re.sub(fr'{a7rf}{{3,}}', a7rf * 2, word).strip()
+                    else:
+                        word = re.sub(fr'{a7rf}+', a7rf, word).strip()
+                #print(word) 
+                for i in range(len(word)):
+                    try:
+                        if word[i] in word_in:
+    
+                                #print(word[i])
+                                index = word_in.index(word[i])
+                                #print("this is  the index : " + str(index))
+                                #print("this is : " + replaced_by[index])
+                                word = word[:i] + replaced_by[index] + word[i + 1:]
+                    except IndexError:
+                             if word[i-1] in word_in:
+                                #print(word[i])
+                                index = word_in.index(word[i])
+                                #print("this is  the index : " + str(index))
+                                #print("this is : " + replaced_by[index])
+                                word = word[:i] + replaced_by[index] + word[i + 1:]
+
+                return word
+
 
       
 
