@@ -1,0 +1,17 @@
+name: Keep Render Webapp Alive
+on:
+  schedule:
+    - cron: '*/1 * * * *' 
+  push:
+    branches: [ "master" ]
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Ping the webapp
+        continue-on-error: true 
+        run: |
+          curl --max-time 5 -X GET https://darija-back.onrender.com || echo "Ping failed but continuing workflow"
+        shell: bash
